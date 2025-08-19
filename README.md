@@ -1,69 +1,63 @@
-# Panda Interpreter — Resolved Issues Summary
+🐼 Panda
 
-This document explains the issues identified and resolved in the Panda project during the current session, along with a brief overview of the changes and examples.
+Panda is a minimalistic, interpreted programming language built from scratch in Java.
+It’s simple, readable, and designed for learning how languages work — from lexing to interpreting.
 
-## Overview
-Panda is a tiny expression language with variables, arithmetic operations, and print statements. The project includes:
-- Lexer: tokenizes input
-- Parser: builds an AST from tokens
-- AST classes: Expressions and Statements
-- Interpreter: evaluates statements and expressions
-- Main: entry point to read, parse, and execute a single line of Panda code
 
-## Issues Resolved
+---
 
-1. Binary expression evaluation in Interpreter
-   - Problem: The Interpreter attempted arithmetic directly on AST node objects (left/right) and cast them to doubles. This would lead to ClassCastException at runtime and incorrect behavior because operands weren’t recursively evaluated.
-   - Fix: Recursively evaluate both sides of a binary expression and coerce to numbers before applying the operator.
-   - Key change:
-     - In `Interpreter.evaluate(Expressions exp)`, for `Expressions.Binary`, call `evaluate` on `left` and `rig`, then convert to `double` via a helper `toNumber` method, and perform arithmetic on the numeric values.
+✨ Features
 
-2. Undefined variable handling
-   - Problem: Accessing a variable that was never defined silently returned null, potentially propagating confusing errors later.
-   - Fix: When evaluating an `Expressions.Variable`, check if the name exists in the environment; if absent, throw a clear `RuntimeException("Undefined variable: <name>")`.
+Variables with let
 
-3. Missing modulo operator in Parser
-   - Problem: The Lexer and TokenType already supported the modulo `%` operator and the Interpreter handled it, but the Parser did not parse `%` in the multiplication-precedence rule. As a result, expressions using `%` failed to parse.
-   - Fix: Include `TokenType.MODULO` in the `parseMultiplication()` loop so `%` is parsed with `*` and `/` precedence.
+Arithmetic with correct precedence
 
-4. Variable state loss between statements in Main
-   - Problem: `Main` created a new `Interpreter` for each statement; variable bindings did not persist across statements, making code like `let a = 1 print(a)` fail.
-   - Fix: Create a single `Interpreter` instance and execute all parsed statements with it, preserving the environment across statements.
+Print statements
 
-## Files Changed
-- `src/Interpreter/Interpreter.java`
-  - Evaluate operands recursively for binary expressions, coerce to numbers with `toNumber`, and perform arithmetic safely.
-  - Validate variables exist; throw a clear error if undefined.
-- `src/Parser/Parser.java`
-  - Add `TokenType.MODULO` handling inside `parseMultiplication()` so `%` is parsed correctly.
-- `src/Main.java`
-  - Instantiate one `Interpreter` and execute all statements with it to preserve variables.
+Parentheses for grouping
 
-## Examples
+== operator for comparison
 
-- Recursive binary evaluation
-  - Input: `print(1 + 2 * 3)`
-  - Result: `7.0` (correct precedence and evaluation)
 
-- Modulo support
-  - Input: `print(10 % 3)`
-  - Result: `1.0`
+Example:
 
-- Variable persistence
-  - Input: `let a = 5 print(a + 2)`
-  - Result: `7.0`
+let x = 2 + 7 * 8
+print(x)  // 58
+if (x == 58) {
+    print("Correct!")
+}
 
-- Undefined variable error
-  - Input: `print(b)`
-  - Result: `RuntimeException: Undefined variable: b`
 
-## How to Run
-1. Build the project (e.g., via your IDE or `javac`).
-2. Run `Main` and enter a single line of Panda code, such as:
-   - `let x = 10 print(x % 4 + 1)`
+---
 
-The program will execute the statements and also print their AST representations afterward.
+🏗 How It Works
 
-## Notes
-- Numbers are currently represented as doubles; arithmetic results are printed as double values.
-- Grammar supports parentheses and standard operator precedence: `*`, `/`, `%` bind tighter than `+`, `-`.
+1. Lexer → Turns source code into tokens
+
+
+2. Parser → Builds an Abstract Syntax Tree (AST)
+
+
+3. Interpreter → Executes the AST
+
+
+
+
+---
+
+🚀 Run
+
+javac -d out $(find src -name "*.java")
+java -cp out Main
+
+
+---
+
+🛠 Roadmap
+
+Loops & functions
+
+Strings & concatenation
+
+
+
