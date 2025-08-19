@@ -17,7 +17,7 @@ public class Interpreter {
         if(stmt instanceof Statement.Let){
             Object val = evaluate(((Statement.Let) stmt).exp);
             var.put(((Statement.Let) stmt).name,val);
-        } 
+        }
         else if (stmt instanceof Statement.Print) {
             Object val = evaluate(((Statement.Print) stmt).exp);
             System.out.println(val);
@@ -30,6 +30,13 @@ public class Interpreter {
             else if(((Statement.If) stmt).ELSE!=null){
                 execute(((Statement.If) stmt).ELSE);
             }
+        }
+        else if(stmt instanceof Statement.For) {
+            execute(((Statement.For) stmt).ini);
+                while (Bool(evaluate(((Statement.For) stmt).cond))) {
+                    execute(((Statement.For) stmt).body);
+                    execute(((Statement.For) stmt).update);
+                }
         }
     }
     
@@ -44,9 +51,21 @@ public class Interpreter {
             return value;
         } 
         else if (exp instanceof Expressions.Binary) {
+            Token op = ((Expressions.Binary) exp).op;
+            if(op.type == TokenType.EQUAL) {
+                Expressions left = ((Expressions.Binary) exp).left;
+                if(left instanceof Expressions.Variable) {
+                    String name = ((Expressions.Variable) left).val;
+                    Object val = evaluate(((Expressions.Binary) exp).rig);
+                    var.put(name, val);
+                    return val;
+                }
+                else {
+                    throw new RuntimeException("Left side of assignment must be a variable, got: " + left);
+                }
+            }
             double lef = toNumber(evaluate(((Expressions.Binary) exp).left));
             double rig = toNumber(evaluate(((Expressions.Binary) exp).rig));
-            Token op = ((Expressions.Binary) exp).op;
             return switch (op.type) {
                 case PLUS -> lef + rig;
                 case MINUS -> lef - rig;
@@ -56,6 +75,7 @@ public class Interpreter {
                 case LESS_THAN -> lef < rig;
                 case GREATER_THAN -> lef > rig;
                 case EQUAL_TO -> lef == rig;
+                case NOT_EQUAL ->  lef != rig;
                 default -> throw new RuntimeException("Unknown Panda Operation");
             };
         }

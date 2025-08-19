@@ -17,7 +17,6 @@ public abstract class Statement {
         }
     }
 
-
     public static class Print extends Statement {
         public final Expressions exp;
 
@@ -46,5 +45,22 @@ public abstract class Statement {
         public String toString() {
             return "if(" + cond + ")\n" + IF + "\nelse\n" + ELSE;
         }
+    }
+
+    public static class For extends Statement {
+        public final Statement ini;
+        public final Expressions cond;
+        public final Statement update;
+        public final Statement body;
+
+        public For(Statement ini, Expressions cond, Statement update, Statement body) {
+            this.ini = ini;
+            this.cond = cond;
+            this.update = update;
+            this.body = body;
+        }
+
+        @Override
+        public String toString() { return "for(" + ini + ";" + cond + ";" + update + ")"; }
     }
 }

@@ -3,7 +3,7 @@ package Lexer;
 public enum TokenType {
     PLUS,MINUS,INTO,SLASH,EQUAL,MODULO,LPAREN,RPAREN,
 
-    LESS_THAN,GREATER_THAN,EQUAL_TO,
+    LESS_THAN,GREATER_THAN,EQUAL_TO,NOT_EQUAL,
 
     LET,PRINT,
 
@@ -11,5 +11,9 @@ public enum TokenType {
 
     IF, ELSE,
 
-    EOF
+    FOR, WHILE,
+
+    EOF,
+
+    SEMI_COLON
 }
