@@ -39,6 +39,8 @@ public class Lexer {
                     break;
                 case '(' : tokens.add(new Token(TokenType.LPAREN,"(")); break;
                 case ')' : tokens.add(new Token(TokenType.RPAREN,")")); break;
+                case '[' : tokens.add(new Token(TokenType.LSQUARE,"[")); break;
+                case ']' : tokens.add(new Token(TokenType.RSQUARE,"]")); break;
                 case '<' : tokens.add(new Token(TokenType.LESS_THAN,"<")); break;
                 case '>' : tokens.add(new Token(TokenType.GREATER_THAN,">")); break;
                 case '!' : if(pos+1<input.length() && input.charAt(pos+1) == '=') {
@@ -46,6 +48,7 @@ public class Lexer {
                             pos++;
                 }
                 case ';' : tokens.add(new Token(TokenType.SEMI_COLON,";")); break;
+                case ',' : tokens.add(new Token(TokenType.COMMA,",")); break;
                 default : throw new RuntimeException("Illegal Panda: " + cur + " " + pos);
             }
             pos++;

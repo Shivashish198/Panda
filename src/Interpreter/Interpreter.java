@@ -18,6 +18,9 @@ public class Interpreter {
             Object val = evaluate(((Statement.Let) stmt).exp);
             var.put(((Statement.Let) stmt).name,val);
         }
+        else if (stmt instanceof Statement.Var) {
+            evaluate(((Statement.Var) stmt).exp);
+        }
         else if (stmt instanceof Statement.Print) {
             Object val = evaluate(((Statement.Print) stmt).exp);
             System.out.println(val);
@@ -47,7 +50,7 @@ public class Interpreter {
         else if(exp instanceof Expressions.Variable) {
             String name = ((Expressions.Variable) exp).val;
             Object value = var.get(name);
-            if (value == null) throw new RuntimeException("Undefined variable: " + name);
+            if (value == null) throw new RuntimeException("Undefined Panda variable: " + name);
             return value;
         } 
         else if (exp instanceof Expressions.Binary) {
@@ -78,6 +81,24 @@ public class Interpreter {
                 case NOT_EQUAL ->  lef != rig;
                 default -> throw new RuntimeException("Unknown Panda Operation");
             };
+        }
+        else if(exp instanceof Expressions.Array) {
+            Object[] array = new Object[((Expressions.Array) exp).arr.size()];
+            for(int i=0;i<((Expressions.Array) exp).arr.size();i++) {
+                array[i] = evaluate(((Expressions.Array) exp).arr.get(i));
+            }
+            return array;
+        }
+        else if(exp instanceof Expressions.ArrayAccess) {
+            int i = ((Double)evaluate(((Expressions.ArrayAccess) exp).i)).intValue();
+            Object[] arr = (Object[]) evaluate(((Expressions.ArrayAccess) exp).arr);
+            return arr[i];
+        }
+        else if(exp instanceof Expressions.ArrayAssign) {
+            int i = ((Double)evaluate(((Expressions.ArrayAssign) exp).i)).intValue();
+            Object[] arr = (Object[]) evaluate(((Expressions.ArrayAssign) exp).arr);
+            Object val = evaluate(((Expressions.ArrayAssign) exp).val);
+            arr[i] = val;
         }
         return null;
     }

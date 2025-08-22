@@ -17,6 +17,14 @@ public abstract class Statement {
         }
     }
 
+    public static class Var extends Statement {
+        public final Expressions exp;
+
+        public Var(Expressions exp) {
+            this.exp = exp;
+        }
+    }
+
     public static class Print extends Statement {
         public final Expressions exp;
 
